@@ -212,7 +212,12 @@ public class MainPage_Customer extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void LogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutActionPerformed
-        new LoginPage().setVisible(true);
+        LoginPage login = new LoginPage();
+        login.setLocation(this.getLocation()); // open in the same place
+        login.setVisible(true);
+
+        // Close this frame
+        this.dispose();
     }//GEN-LAST:event_LogoutActionPerformed
 
     /**
