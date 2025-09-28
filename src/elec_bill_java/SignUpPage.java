@@ -1,5 +1,16 @@
 package elec_bill_java;
 
+import database.DBUtil;
+import static database.DBUtil.getConnection;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.util.List;
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.Random;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -12,12 +23,16 @@ package elec_bill_java;
 public class SignUpPage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SignUpPage.class.getName());
+    
+    // Add this field to store state name -> state ID mapping
+    private Map<String, Integer> stateIdMap = new java.util.HashMap<>();
 
     /**
      * Creates new form Main_Page
      */
     public SignUpPage() {
         initComponents();
+        setupComboBoxes();
     }
 
     /**
@@ -32,7 +47,6 @@ public class SignUpPage extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         NameL = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
         NameE = new javax.swing.JTextField();
         PhoneNoL = new javax.swing.JLabel();
         EmailL = new javax.swing.JLabel();
@@ -48,23 +62,27 @@ public class SignUpPage extends javax.swing.JFrame {
         PasswordE = new javax.swing.JPasswordField();
         SignUpB = new javax.swing.JButton();
         Error = new javax.swing.JLabel();
+        AddressL = new javax.swing.JLabel();
+        Address = new javax.swing.JTextArea();
+        MeterL = new javax.swing.JLabel();
+        MeterE = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 41, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 600, Short.MAX_VALUE)
+        );
+
         NameL.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         NameL.setText("Name");
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 40, Short.MAX_VALUE)
-        );
 
         NameE.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
@@ -89,6 +107,11 @@ public class SignUpPage extends javax.swing.JFrame {
 
         StateE.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         StateE.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        StateE.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                StateEActionPerformed(evt);
+            }
+        });
 
         CityE.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         CityE.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -112,49 +135,73 @@ public class SignUpPage extends javax.swing.JFrame {
         Error.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         Error.setForeground(new java.awt.Color(255, 51, 51));
 
+        AddressL.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        AddressL.setText("Address");
+
+        Address.setColumns(20);
+        Address.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        Address.setRows(5);
+
+        MeterL.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        MeterL.setText("Meter Type:");
+
+        MeterE.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        MeterE.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(192, 192, 192)
+                .addComponent(SignUpB)
+                .addGap(71, 153, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(46, 46, 46)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(AddressL, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(Address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(143, 143, 143)
-                                .addComponent(NameE, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(46, 46, 46)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(Error, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(NameL, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(PhoneNoL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(EmailL, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(GenderL, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(StateL, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(CityL, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(PasswordL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addGap(18, 18, 18)
-                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(SignUpB)
-                                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(PhoneNoE)
-                                                .addComponent(EmailE)
-                                                .addComponent(GenderE, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(StateE, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(CityE, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(PasswordE)))))))
-                        .addGap(0, 59, Short.MAX_VALUE)))
+                                    .addComponent(NameL, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(PhoneNoL, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(EmailL, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(StateL, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(GenderL)
+                                    .addComponent(CityL, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(MeterL))
+                                .addGap(5, 5, 5))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(PasswordL, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(NameE, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 24, Short.MAX_VALUE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(MeterE, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(GenderE, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(StateE, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(CityE, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(PasswordE)
+                                    .addComponent(PhoneNoE)
+                                    .addComponent(EmailE))
+                                .addGap(71, 71, 71))))))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(Error, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(46, 46, 46)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(NameL, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(NameE, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -176,31 +223,29 @@ public class SignUpPage extends javax.swing.JFrame {
                     .addComponent(StateL, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(CityL, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CityE, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(PasswordL, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(PasswordE)
-                        .addGap(2, 2, 2)))
+                    .addComponent(CityE, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CityL, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(MeterL, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(MeterE, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(AddressL, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(PasswordE, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(PasswordL, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(38, 38, 38)
                 .addComponent(SignUpB)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(Error)
-                .addContainerGap(60, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        Address.setLineWrap(true);
+        Address.setWrapStyleWord(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -208,14 +253,18 @@ public class SignUpPage extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -223,8 +272,169 @@ public class SignUpPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void SignUpBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUpBActionPerformed
-        // TODO add your handling code here:
+        String name = NameE.getText().trim();
+        String phone = PhoneNoE.getText().trim();
+        String email = EmailE.getText().trim();
+        String gender = (String) GenderE.getSelectedItem();
+        String state = (String) StateE.getSelectedItem();
+        String city = (String) CityE.getSelectedItem();
+        String meter = (String) MeterE.getSelectedItem();
+        String password = new String(PasswordE.getPassword());
+        String address = Address.getText().trim();
+
+        int cityID = 0;
+        String cityQuery = "SELECT CityID FROM city WHERE cityName = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(cityQuery)) {
+            ps.setString(1, city);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    cityID = rs.getInt("CityID");
+                } else {
+                    Error.setText("Invalid city selection.");
+                    return;
+                }
+            } catch (SQLException ex) {
+                System.getLogger(SignUpPage.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+        } catch (SQLException ex) {
+            System.getLogger(SignUpPage.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        
+        int RateID = 0;
+        String rateQuery = "SELECT RateID FROM rate WHERE Type = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(rateQuery)) {
+            ps.setString(1, meter);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    RateID = rs.getInt("RateID");
+                } else {
+                    Error.setText("Invalid type selection.");
+                    return;
+                }
+            } catch (SQLException ex) {
+                System.getLogger(SignUpPage.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+        } catch (SQLException ex) {
+            System.getLogger(SignUpPage.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        
+        // Input validation
+        if (name.isEmpty() || phone.isEmpty() || email.isEmpty() || 
+            "Select Gender".equals(gender) || "Select State".equals(state) ||
+            "Select City".equals(city) || password.isEmpty() || address.isEmpty() || meter.isEmpty()) {
+            Error.setText("Please fill all fields correctly.");
+            return;
+        }
+
+        // Email format validation
+        if (!isValidEmail(email)) {
+            Error.setText("Please enter a valid email address.");
+            return;
+        }
+
+        // Phone number validation
+        if (!isValidPhone(phone)) {
+            Error.setText("Please enter a valid phone number (10 digits).");
+            return;
+        }
+
+        // Password strength validation
+        if (!isStrongPassword(password)) {
+            Error.setText("Password must be at least 8 characters with uppercase, lowercase, number, and special character.");
+            return;
+        }
+
+        try (java.sql.Connection conn = DBUtil.getConnection()) {
+
+            // Check if email or phone already exists
+            String checkQuery = "SELECT COUNT(*) FROM customer WHERE EmailID = ? OR phoneno = ?";
+            try (java.sql.PreparedStatement checkStmt = conn.prepareStatement(checkQuery)) {
+                checkStmt.setString(1, email);
+                checkStmt.setString(2, phone);
+                try (java.sql.ResultSet rs = checkStmt.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) > 0) {
+                        Error.setText("Email or Phone already exists!");
+                        return;
+                    }
+                }
+            }
+
+            // Generate unique customer ID
+            int newCustomerId = generateUniqueCID();
+
+            // Get city and state IDs
+            Integer stateId = stateIdMap.get(state);
+            Integer cityId = getCityId(city, stateId);
+
+            if (stateId == null || cityId == null) {
+                Error.setText("Invalid state or city selection.");
+                return;
+            }
+
+            // SECURITY FIX: Use secure password hashing
+            String salt = DBUtil.generateSalt();
+            String hashedPassword = DBUtil.hashPassword(password, salt);
+
+            // Insert into customer with secure password storage
+            String insertQueryCustomer = "INSERT INTO customer (C_ID, EmailID, ConnectionDate, Gender, name, Password, Salt, phoneno) "
+                               + "VALUES (?, ?, CURDATE(), ?, ?, ?, ?, ?)";
+            try (java.sql.PreparedStatement insertStmt = conn.prepareStatement(insertQueryCustomer)) {
+                insertStmt.setInt(1, newCustomerId);
+                insertStmt.setString(2, email);
+                insertStmt.setString(3, gender.substring(0, 1).toUpperCase());
+                insertStmt.setString(4, name);
+                insertStmt.setString(5, hashedPassword);
+                insertStmt.setString(6, salt);
+                insertStmt.setString(7, phone);
+
+                insertStmt.executeUpdate();
+            }
+            
+            // Insert into address
+            String insertQueryAddress = "INSERT INTO address (C_ID, CityID, AddressText) " + "VALUES (?, ?, ?)";
+            try (java.sql.PreparedStatement insertStmt = conn.prepareStatement(insertQueryAddress)){
+                insertStmt.setInt(1, newCustomerId);
+                insertStmt.setInt(2, cityID);
+                insertStmt.setString(3, address);
+                
+                insertStmt.executeUpdate(); 
+            }
+            
+            //Insert int meter
+            String insertQueryMeter = "INSERT INTO meter (C_ID, Status, RateID) " + "VALUES (?, ?, ?)";
+            try (java.sql.PreparedStatement insertStmt = conn.prepareStatement(insertQueryMeter)){
+                insertStmt.setInt(1, newCustomerId);
+                insertStmt.setString(2, "notDue");
+                insertStmt.setInt(3, RateID);
+                
+                insertStmt.executeUpdate(); 
+            }
+            
+            // Clear the form
+            clearForm();
+
+            Error.setForeground(new java.awt.Color(0, 128, 0));
+            Error.setText("Sign up successful! Customer ID: " + newCustomerId);
+            
+            java.awt.EventQueue.invokeLater(() -> {
+                MainPage_Customer mainPage = new MainPage_Customer(name); // pass the customer name
+                mainPage.setLocation(this.getLocation()); // same position as SignUpPage
+                mainPage.setVisible(true);
+                this.dispose(); // close the signup page
+            });
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            Error.setText("Database error: " + ex.getMessage());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Error.setText("Unexpected error occurred. Please try again.");
+        }
     }//GEN-LAST:event_SignUpBActionPerformed
+
+    private void StateEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StateEActionPerformed
+        handleStateSelection();
+    }//GEN-LAST:event_StateEActionPerformed
 
     /**
      * @param args the command line arguments
@@ -252,6 +462,8 @@ public class SignUpPage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JTextArea Address;
+    private javax.swing.JLabel AddressL;
     private javax.swing.JComboBox<String> CityE;
     private javax.swing.JLabel CityL;
     private javax.swing.JTextField EmailE;
@@ -259,6 +471,8 @@ public class SignUpPage extends javax.swing.JFrame {
     private javax.swing.JLabel Error;
     private javax.swing.JComboBox<String> GenderE;
     private javax.swing.JLabel GenderL;
+    private javax.swing.JComboBox<String> MeterE;
+    private javax.swing.JLabel MeterL;
     private javax.swing.JTextField NameE;
     private javax.swing.JLabel NameL;
     private javax.swing.JPasswordField PasswordE;
@@ -270,6 +484,176 @@ public class SignUpPage extends javax.swing.JFrame {
     private javax.swing.JLabel StateL;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     // End of variables declaration//GEN-END:variables
+
+    private void setupComboBoxes() {
+        // Setup Gender ComboBox
+        GenderE.removeAllItems();
+        GenderE.addItem("Select Gender");
+        GenderE.addItem("Male");
+        GenderE.addItem("Female");
+        GenderE.setSelectedIndex(0);
+
+        // Setup State ComboBox
+        setupStateComboBox();
+        
+        setupCityComboBox();
+        
+        setupMeterComboBox();
+    }
+    
+    private void setupStateComboBox() {
+        StateE.removeAllItems();
+        StateE.addItem("Select State");
+        stateIdMap.clear();
+
+        try {
+            // Load states from database as Map (name -> id)
+            stateIdMap = DBUtil.getStatesAsMap();
+
+            for (String stateName : stateIdMap.keySet()) {
+                StateE.addItem(stateName);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            Error.setText("Error loading states");
+        }
+
+        StateE.setSelectedIndex(0); // Add this line
+    }   
+
+    private void handleStateSelection() {
+        String selectedState = (String) StateE.getSelectedItem();
+
+        if (!"Select State".equals(selectedState) && stateIdMap.containsKey(selectedState)) {
+            int stateId = stateIdMap.get(selectedState);
+            loadCitiesForState(stateId);
+            CityE.setEnabled(true); // Enable city combo box
+        } else {
+            // "Select State" is selected
+            CityE.removeAllItems();
+            CityE.addItem("Select City");
+            CityE.setEnabled(false); // Disable city combo box
+            CityE.setSelectedIndex(0);
+        }
+    }
+    
+    private void loadCitiesForState(int stateId) {
+        CityE.removeAllItems();
+        CityE.addItem("Select City");
+
+        try {
+            List<String> cities = DBUtil.getCitiesByStateId(stateId);
+            for (String city : cities) {
+                CityE.addItem(city);
+            }
+            CityE.setSelectedIndex(0); // Select "Select City"
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            Error.setText("Error loading cities");
+        }
+    }
+    
+    private void setupCityComboBox() {
+        CityE.removeAllItems();
+        CityE.addItem("Select City");
+        CityE.setEnabled(false); // Disable initially
+        CityE.setSelectedIndex(0);
+    }
+    
+    private void setupMeterComboBox() {
+        MeterE.removeAllItems();
+        MeterE.addItem("Select Meter");
+
+        try {
+            List<String> types = DBUtil.getAllTypes();
+            for (String type : types) {
+                MeterE.addItem(type);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            Error.setText("Error loading meter types");
+        }
+
+        MeterE.setSelectedIndex(0); // Default to "Select Meter"
+    }
+
+    private int generateUniqueCID() throws SQLException {
+        java.util.Random random = new java.util.Random();
+        int cid;
+
+        String query = "SELECT COUNT(*) FROM customer WHERE C_ID = ?";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            while (true) {
+                // generate random ID (adjust range as needed, e.g. 1000–9999)
+                cid = 1000 + random.nextInt(9000);
+
+                ps.setInt(1, cid);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) == 0) {
+                        // ID not in use → good to go
+                        break;
+                    }
+                }
+            }
+        }
+
+        return cid;
+    }
+    
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+    
+    private boolean isValidPhone(String phone) {
+        // Indian phone number format (10 digits)
+        String phoneRegex = "^[6-9]\\d{9}$";
+        return phone.matches(phoneRegex);
+    }
+    
+    private boolean isStrongPassword(String password) {
+        if (password.length() < 8) return false;
+
+        boolean hasUpper = password.chars().anyMatch(Character::isUpperCase);
+        boolean hasLower = password.chars().anyMatch(Character::isLowerCase);
+        boolean hasDigit = password.chars().anyMatch(Character::isDigit);
+        boolean hasSpecial = password.chars().anyMatch(ch -> "!@#$%^&*()_+-=[]{}|;:,.<>?".indexOf(ch) >= 0);
+
+        return hasUpper && hasLower && hasDigit && hasSpecial;
+    }
+    
+    private Integer getCityId(String cityName, Integer stateId) throws SQLException {
+        String query = "SELECT cityId FROM city WHERE cityName = ? AND stateId = ?";
+        try (java.sql.Connection conn = DBUtil.getConnection();
+             java.sql.PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, cityName);
+            stmt.setInt(2, stateId);
+
+            try (java.sql.ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("cityId");
+                }
+            }
+        }
+        return null;
+    }
+ 
+    private void clearForm() {
+        NameE.setText("");
+        PhoneNoE.setText("");
+        EmailE.setText("");
+        Address.setText("");
+        PasswordE.setText("");
+        GenderE.setSelectedIndex(0);
+        StateE.setSelectedIndex(0);
+        CityE.setSelectedIndex(0);
+        MeterE.setSelectedIndex(0);
+        CityE.setEnabled(false);
+    }
+    
 }

@@ -4,6 +4,11 @@
  */
 package elec_bill_java;
 
+import database.DBUtil;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
 /**
  *
  * @author Admin
@@ -11,12 +16,17 @@ package elec_bill_java;
 public class LoginPage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LoginPage.class.getName());
-
+    private static final int MAX_LOGIN_ATTEMPTS = 5;
+    private int loginAttempts = 0;
+    private long lastAttemptTime = 0;
+    private static final long LOCKOUT_DURATION = 300000;
+    
     /**
      * Creates new form LoginPage
      */
     public LoginPage() {
         initComponents();
+        setupUI();
     }
 
     /**
@@ -29,16 +39,18 @@ public class LoginPage extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        Username_label = new javax.swing.JLabel();
-        Username_Enter = new javax.swing.JTextField();
+        Email_label = new javax.swing.JLabel();
+        Email_Enter = new javax.swing.JTextField();
         Password_label = new javax.swing.JLabel();
         Password_Enter = new javax.swing.JPasswordField();
         Login = new javax.swing.JButton();
+        SignUp = new javax.swing.JButton();
+        Error = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        Username_label.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        Username_label.setText("Username:");
+        Email_label.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        Email_label.setText("Email:");
 
         Password_label.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         Password_label.setText("Password:");
@@ -50,38 +62,58 @@ public class LoginPage extends javax.swing.JFrame {
             }
         });
 
+        SignUp.setText("Sign Up");
+        SignUp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SignUpActionPerformed(evt);
+            }
+        });
+
+        Error.setForeground(new java.awt.Color(255, 51, 51));
+        Error.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(64, 64, 64)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(Username_label)
-                    .addComponent(Password_label))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(Password_Enter, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
-                    .addComponent(Username_Enter)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(Login, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(98, Short.MAX_VALUE))
+                        .addGap(64, 64, 64)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(Email_label)
+                            .addComponent(Password_label))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(Password_Enter, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
+                            .addComponent(Email_Enter)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(SignUp, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                                    .addComponent(Login, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(72, 72, 72)
+                        .addComponent(Error, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Username_label, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Username_Enter, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Email_label, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Email_Enter, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Password_label, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Password_Enter, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(9, 9, 9)
                 .addComponent(Login)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(SignUp)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addComponent(Error))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -105,8 +137,104 @@ public class LoginPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
-        
+        String email = Email_Enter.getText().trim();
+        String password = new String(Password_Enter.getPassword());
+
+        // Clear previous error messages
+        Error.setText("");
+        Error.setForeground(new java.awt.Color(255, 51, 51));
+
+        // Input validation
+        if (email.isEmpty() || password.isEmpty()) {
+            Error.setText("Please enter both email and password");
+            return;
+        }
+
+        // Email format validation
+        if (!isValidEmail(email)) {
+            Error.setText("Please enter a valid email address");
+            return;
+        }
+
+        // Check for account lockout
+        if (isAccountLocked()) {
+            long remainingTime = (LOCKOUT_DURATION - (System.currentTimeMillis() - lastAttemptTime)) / 1000;
+            Error.setText("Too many failed attempts. Try again in " + remainingTime + " seconds");
+            return;
+        }
+
+        try {
+            DBUtil.UserType userType = DBUtil.checkLoginAndGetType(email, password);
+
+            if (null == userType) {
+                // Invalid credentials
+                handleFailedLogin();
+                Error.setText("Invalid email or password");
+            } else switch (userType) {
+        case ADMIN:
+            {
+                // Reset login attempts on successful login
+                resetLoginAttempts();
+                // Get admin details if needed
+                String adminName = getAdminName(email);
+                Error.setForeground(new java.awt.Color(0, 128, 0));
+                Error.setText("Login successful! Redirecting...");
+                // Small delay for user feedback
+                javax.swing.Timer timer;
+                timer = new javax.swing.Timer(1000, e -> {
+                    MainPage_Admin adminPage;
+                    adminPage = new MainPage_Admin(adminName != null ? adminName : email);
+                    adminPage.setLocation(this.getLocation());
+                    adminPage.setVisible(true);
+                    this.dispose();
+                });
+                timer.setRepeats(false);
+                timer.start();
+                break;
+            }
+        case CUSTOMER:
+            {
+                // Reset login attempts on successful login
+                resetLoginAttempts();
+                // Get customer details
+                String customerName = getCustomerName(email);
+                Error.setForeground(new java.awt.Color(0, 128, 0));
+                Error.setText("Login successful! Redirecting...");
+                // Small delay for user feedback
+                javax.swing.Timer timer = new javax.swing.Timer(1000, e -> {
+                    MainPage_Customer custPage = new MainPage_Customer(customerName);
+                    custPage.setLocation(this.getLocation());
+                    custPage.setVisible(true);
+                    this.dispose();
+                });
+                timer.setRepeats(false);
+                timer.start();
+                break;
+            }
+        default:
+            // Invalid credentials
+            handleFailedLogin();
+            Error.setText("Invalid email or password");
+            break;
+    }
+
+        } catch (Exception ex) {
+            handleFailedLogin();
+            Error.setText("Login failed. Please check your credentials.");
+            logger.warning(() -> "Login attempt failed for email: " + email + " - " + ex.getMessage());
+        } finally {
+            // Clear password field for security
+            Password_Enter.setText("");
+        }
     }//GEN-LAST:event_LoginActionPerformed
+
+    private void SignUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUpActionPerformed
+        SignUpPage signUpPage = new SignUpPage();
+        signUpPage.setLocation(this.getLocation());
+        signUpPage.setVisible(true);
+        this.dispose();
+        
+    }//GEN-LAST:event_SignUpActionPerformed
 
     /**
      * @param args the command line arguments
@@ -134,11 +262,89 @@ public class LoginPage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField Email_Enter;
+    private javax.swing.JLabel Email_label;
+    private javax.swing.JLabel Error;
     private javax.swing.JButton Login;
     private javax.swing.JPasswordField Password_Enter;
     private javax.swing.JLabel Password_label;
-    private javax.swing.JTextField Username_Enter;
-    private javax.swing.JLabel Username_label;
+    private javax.swing.JButton SignUp;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
+    
+    private void setupUI() {
+        setTitle("Electricity Bill Management - Login");
+        setLocationRelativeTo(null); // Center the window
+        setResizable(false);
+        
+        // Set Enter key as default button for Login
+        getRootPane().setDefaultButton(Login);
+    }
+    
+    // Security: Email validation
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+    
+    // Security: Rate limiting for login attempts
+    private boolean isAccountLocked() {
+        if (loginAttempts >= MAX_LOGIN_ATTEMPTS) {
+            long timeSinceLastAttempt = System.currentTimeMillis() - lastAttemptTime;
+            return timeSinceLastAttempt < LOCKOUT_DURATION;
+        }
+        return false;
+    }
+    
+    private void handleFailedLogin() {
+        loginAttempts++;
+        lastAttemptTime = System.currentTimeMillis();
+        
+        if (loginAttempts >= MAX_LOGIN_ATTEMPTS) {
+            Error.setText("Account temporarily locked due to multiple failed attempts");
+        } else {
+            int remainingAttempts = MAX_LOGIN_ATTEMPTS - loginAttempts;
+            Error.setText("Invalid credentials. " + remainingAttempts + " attempts remaining");
+        }
+    }
+    
+    private void resetLoginAttempts() {
+        loginAttempts = 0;
+        lastAttemptTime = 0;
+    }
+    
+    // Get admin name for display
+    private String getAdminName(String email) {
+        try {
+            String query = "SELECT name FROM admin WHERE email = ?";
+            List<Map<String, Object>> results = DBUtil.executeQuery(query, email);
+            
+            if (!results.isEmpty()) {
+                return (String) results.get(0).get("name");
+            }
+        } catch (SQLException ex) {
+            logger.warning("Failed to retrieve admin name: " + ex.getMessage());
+        }
+        return null;
+    }
+    
+    // Get customer name for display
+    private String getCustomerName(String email) {
+        try {
+            String query = "SELECT Name FROM customer WHERE EmailID = ?";
+            List<Map<String, Object>> results = DBUtil.executeQuery(query, email);
+
+            if (!results.isEmpty()) {
+                Map<String, Object> row = results.get(0);
+                // Try both lowercase and exact column name
+                Object nameObj = row.get("Name");
+                if (nameObj == null) nameObj = row.get("name"); 
+                if (nameObj != null) return nameObj.toString();
+            }
+        } catch (SQLException ex) {
+            logger.warning(() -> "Failed to retrieve customer name: " + ex.getMessage());
+        }
+        return null;
+    }
+
 }
