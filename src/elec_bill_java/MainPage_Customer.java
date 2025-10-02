@@ -28,6 +28,13 @@ public class MainPage_Customer extends javax.swing.JFrame {
         Welcome.setText("Welcome, " + name);
         setResizable(false);
     }
+    
+    public MainPage_Customer(int C_ID) throws SQLException {
+        initComponents();
+        this.name = DBUtil.getName(C_ID);
+        Welcome.setText("Welcome, " + name);
+        setResizable(false);
+    }
 
     private MainPage_Customer() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody

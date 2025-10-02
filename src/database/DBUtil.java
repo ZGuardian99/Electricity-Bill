@@ -385,4 +385,20 @@ public class DBUtil {
             }
         }
     }
+    
+    public static String getName(int C_ID) throws SQLException {
+        String query = "SELECT Name FROM customer WHERE C_ID = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, C_ID);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("Name");
+                }
+            }
+        }
+        return null;
+    }
 }

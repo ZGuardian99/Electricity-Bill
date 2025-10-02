@@ -20,6 +20,8 @@ import java.sql.SQLException;
  */
 public class ViewDetails extends javax.swing.JFrame {
     
+    private int C_ID;
+    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewDetails.class.getName());
 
     /**
@@ -28,6 +30,7 @@ public class ViewDetails extends javax.swing.JFrame {
      * @throws java.sql.SQLException
      */
     public ViewDetails(int C_ID) throws SQLException {
+        this.C_ID = C_ID;
         initComponents();
         this.setDetails1(DBUtil.loadDetails1(C_ID));
         this.setDetails2(DBUtil.loadDetails2(C_ID));
@@ -59,7 +62,7 @@ public class ViewDetails extends javax.swing.JFrame {
         GenderO = new javax.swing.JLabel();
         StateO = new javax.swing.JLabel();
         CityO = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        Update = new javax.swing.JButton();
         AddressL = new javax.swing.JLabel();
         AddressO = new javax.swing.JTextArea();
 
@@ -101,11 +104,11 @@ public class ViewDetails extends javax.swing.JFrame {
         CityO.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         CityO.setText("City");
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton1.setText("Update");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        Update.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        Update.setText("Update");
+        Update.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                UpdateActionPerformed(evt);
             }
         });
 
@@ -128,7 +131,7 @@ public class ViewDetails extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(46, 46, 46)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Update, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(AddressO, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jPanel2Layout.createSequentialGroup()
@@ -185,7 +188,7 @@ public class ViewDetails extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(AddressO, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Update, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(41, Short.MAX_VALUE))
         );
 
@@ -205,9 +208,12 @@ public class ViewDetails extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void UpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateActionPerformed
+        Update update = new Update(C_ID);
+        update.setLocation(this.getLocation());
+        update.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_UpdateActionPerformed
 
     /**
      * @param args the command line arguments
@@ -249,7 +255,7 @@ public class ViewDetails extends javax.swing.JFrame {
     private javax.swing.JLabel PhoneNoO;
     private javax.swing.JLabel StateL;
     private javax.swing.JLabel StateO;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton Update;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
     

@@ -382,7 +382,7 @@ public class SignUpPage extends javax.swing.JFrame {
             try (java.sql.PreparedStatement insertStmt = conn.prepareStatement(insertQueryCustomer)) {
                 insertStmt.setInt(1, newCustomerId);
                 insertStmt.setString(2, email);
-                insertStmt.setString(3, gender.substring(0, 1).toUpperCase());
+                insertStmt.setString(3, gender);
                 insertStmt.setString(4, name);
                 insertStmt.setString(5, hashedPassword);
                 insertStmt.setString(6, salt);
