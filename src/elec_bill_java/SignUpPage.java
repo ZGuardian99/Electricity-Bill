@@ -33,6 +33,7 @@ public class SignUpPage extends javax.swing.JFrame {
     public SignUpPage() {
         initComponents();
         setupComboBoxes();
+        setResizable(false);
     }
 
     /**

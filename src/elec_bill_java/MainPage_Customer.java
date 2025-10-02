@@ -1,5 +1,8 @@
 package elec_bill_java;
 
+import database.DBUtil;
+import java.sql.SQLException;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -11,6 +14,8 @@ package elec_bill_java;
  */
 public class MainPage_Customer extends javax.swing.JFrame {
     
+    String name;
+    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainPage_Customer.class.getName());
 
     /**
@@ -18,8 +23,10 @@ public class MainPage_Customer extends javax.swing.JFrame {
      * @param name
      */
     public MainPage_Customer(String name) {
+        this.name = name;
         initComponents();
         Welcome.setText("Welcome, " + name);
+        setResizable(false);
     }
 
     private MainPage_Customer() {
@@ -35,51 +42,14 @@ public class MainPage_Customer extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        PayBill = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         Welcome = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        ViewDetails = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        TransactionHistory = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         Logout = new javax.swing.JButton();
+        ViewDetails = new javax.swing.JButton();
+        PayBill = new javax.swing.JButton();
+        History = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        PayBill.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Bill.png"))); // NOI18N
-
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel2.setText("Pay Bill");
-
-        javax.swing.GroupLayout PayBillLayout = new javax.swing.GroupLayout(PayBill);
-        PayBill.setLayout(PayBillLayout);
-        PayBillLayout.setHorizontalGroup(
-            PayBillLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PayBillLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addContainerGap())
-            .addGroup(PayBillLayout.createSequentialGroup()
-                .addGap(43, 43, 43)
-                .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        PayBillLayout.setVerticalGroup(
-            PayBillLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PayBillLayout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addContainerGap(16, Short.MAX_VALUE))
-        );
 
         Welcome.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
         Welcome.setText("Welcome, ");
@@ -87,79 +57,46 @@ public class MainPage_Customer extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel3.setText("What would you like to do today?");
 
-        ViewDetails.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/view-details.png"))); // NOI18N
-
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel5.setText("ViewDetail");
-
-        javax.swing.GroupLayout ViewDetailsLayout = new javax.swing.GroupLayout(ViewDetails);
-        ViewDetails.setLayout(ViewDetailsLayout);
-        ViewDetailsLayout.setHorizontalGroup(
-            ViewDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ViewDetailsLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel4))
-            .addGroup(ViewDetailsLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jLabel5)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        ViewDetailsLayout.setVerticalGroup(
-            ViewDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ViewDetailsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel5)
-                .addContainerGap(16, Short.MAX_VALUE))
-        );
-
-        TransactionHistory.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/payment-transaction-history-concept-illustration-line-icon-design-editable-eps10-vector.png"))); // NOI18N
-
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel7.setText("Transaction");
-
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel8.setText("History");
-
-        javax.swing.GroupLayout TransactionHistoryLayout = new javax.swing.GroupLayout(TransactionHistory);
-        TransactionHistory.setLayout(TransactionHistoryLayout);
-        TransactionHistoryLayout.setHorizontalGroup(
-            TransactionHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(TransactionHistoryLayout.createSequentialGroup()
-                .addComponent(jLabel6)
-                .addGap(0, 8, Short.MAX_VALUE))
-            .addGroup(TransactionHistoryLayout.createSequentialGroup()
-                .addGroup(TransactionHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(TransactionHistoryLayout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(jLabel7))
-                    .addGroup(TransactionHistoryLayout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addComponent(jLabel8)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        TransactionHistoryLayout.setVerticalGroup(
-            TransactionHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, TransactionHistoryLayout.createSequentialGroup()
-                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         Logout.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         Logout.setForeground(new java.awt.Color(255, 51, 51));
         Logout.setText("Logout");
+        Logout.setContentAreaFilled(false);
         Logout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 LogoutActionPerformed(evt);
+            }
+        });
+
+        ViewDetails.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        ViewDetails.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/view-details.png"))); // NOI18N
+        ViewDetails.setText("View Details");
+        ViewDetails.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        ViewDetails.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        ViewDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ViewDetailsActionPerformed(evt);
+            }
+        });
+
+        PayBill.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        PayBill.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Bill.png"))); // NOI18N
+        PayBill.setText("Pay Bill");
+        PayBill.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        PayBill.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        PayBill.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PayBillActionPerformed(evt);
+            }
+        });
+
+        History.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        History.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/payment-transaction-history-concept-illustration-line-icon-design-editable-eps10-vector.png"))); // NOI18N
+        History.setText("Transaction History");
+        History.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        History.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        History.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                HistoryActionPerformed(evt);
             }
         });
 
@@ -168,44 +105,41 @@ public class MainPage_Customer extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Welcome, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(Logout)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 258, Short.MAX_VALUE)
-                .addComponent(PayBill, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(64, 64, 64)
-                .addComponent(TransactionHistory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(60, 60, 60))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(54, 54, 54)
-                    .addComponent(ViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(474, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(ViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(PayBill, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(History)
+                        .addContainerGap(21, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(Welcome, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(Logout)))
+                        .addGap(41, 41, 41))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(Logout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(Welcome, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Welcome, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Logout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(TransactionHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 183, Short.MAX_VALUE)
-                    .addComponent(PayBill, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(40, 40, 40))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(142, Short.MAX_VALUE)
-                    .addComponent(ViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(36, 36, 36)))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(PayBill, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(History, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         pack();
@@ -219,6 +153,25 @@ public class MainPage_Customer extends javax.swing.JFrame {
         // Close this frame
         this.dispose();
     }//GEN-LAST:event_LogoutActionPerformed
+
+    private void ViewDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewDetailsActionPerformed
+        try {
+            ViewDetails vDetail = new ViewDetails(DBUtil.getCID(name));
+            vDetail.setLocation(this.getLocation());
+            vDetail.setVisible(true);
+            this.dispose();
+        } catch (SQLException ex) {
+            System.getLogger(MainPage_Customer.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }        
+    }//GEN-LAST:event_ViewDetailsActionPerformed
+
+    private void PayBillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PayBillActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_PayBillActionPerformed
+
+    private void HistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HistoryActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_HistoryActionPerformed
 
     /**
      * @param args the command line arguments
@@ -246,18 +199,13 @@ public class MainPage_Customer extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton History;
     private javax.swing.JButton Logout;
-    private javax.swing.JPanel PayBill;
-    private javax.swing.JPanel TransactionHistory;
-    private javax.swing.JPanel ViewDetails;
+    private javax.swing.JButton PayBill;
+    private javax.swing.JButton ViewDetails;
     private javax.swing.JLabel Welcome;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     // End of variables declaration//GEN-END:variables
+
+    
 }

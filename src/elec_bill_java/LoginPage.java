@@ -27,6 +27,7 @@ public class LoginPage extends javax.swing.JFrame {
     public LoginPage() {
         initComponents();
         setupUI();
+        setResizable(false);
     }
 
     /**
@@ -183,7 +184,7 @@ public class LoginPage extends javax.swing.JFrame {
                 javax.swing.Timer timer;
                 timer = new javax.swing.Timer(1000, e -> {
                     MainPage_Admin adminPage;
-                    adminPage = new MainPage_Admin(adminName != null ? adminName : email);
+                    adminPage = new MainPage_Admin();
                     adminPage.setLocation(this.getLocation());
                     adminPage.setVisible(true);
                     this.dispose();
@@ -323,7 +324,7 @@ public class LoginPage extends javax.swing.JFrame {
                 return (String) results.get(0).get("name");
             }
         } catch (SQLException ex) {
-            logger.warning("Failed to retrieve admin name: " + ex.getMessage());
+            logger.warning(() -> "Failed to retrieve admin name: " + ex.getMessage());
         }
         return null;
     }

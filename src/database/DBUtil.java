@@ -291,6 +291,14 @@ public class DBUtil {
     }
     
     // Utility method for creating new user accounts with secure password storage
+
+    /**
+     *
+     * @param email
+     * @param password
+     * @param otherParams
+     * @throws SQLException
+     */
     public static void createUserWithSecurePassword(String email, String password, String... otherParams) throws SQLException {
         String salt = generateSalt();
         String hashedPassword = hashPassword(password, salt);
@@ -306,5 +314,75 @@ public class DBUtil {
         System.arraycopy(otherParams, 0, params, 3, otherParams.length);
         
         executeUpdate(insertQuery, params);
+    }
+    
+    /**
+     *
+     * @param C_ID
+     * @return
+     * @throws SQLException
+     */
+    public static Details loadDetails1(int C_ID) throws SQLException {
+        String query = "SELECT Name, PhoneNo, EmailID, Gender FROM customer WHERE C_ID = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, C_ID);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) { // ✅ move to first row
+                    return new Details(
+                        rs.getString("Name"),
+                        rs.getString("PhoneNo"),
+                        rs.getString("EmailID"),
+                        rs.getString("Gender")
+                    );
+                } else {
+                    return null; // or throw an exception if C_ID not found
+                }
+            }
+        }
+    }
+
+    
+    public static Details2 loadDetails2(int C_ID) throws SQLException {
+        String query = "SELECT AddressText, CityID FROM address WHERE C_ID = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, C_ID);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) { // move to the first row
+                    return new Details2(
+                        rs.getString("AddressText"),
+                        rs.getInt("CityID")
+                    );
+                } else {
+                    return null; // or throw an exception if no address found
+                }
+            }
+        }
+    }
+
+    
+    public static int getCID(String name) throws SQLException {
+        String query = "SELECT C_ID FROM customer WHERE Name = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, name);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("C_ID");
+                } else {
+                    // No customer found with that name
+                    return -1; // or throw exception if you prefer
+                }
+            }
+        }
     }
 }

@@ -15,10 +15,11 @@ public class MainPage_Admin extends javax.swing.JFrame {
     
     /**
      * Creates new form MainPage
-     * @param name
      */
-    public MainPage_Admin(String name) {
+    public MainPage_Admin() {
         initComponents();
+        setResizable(false);
+        
     }
 
     /**
@@ -49,7 +50,7 @@ public class MainPage_Admin extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         Text.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
-        Text.setText("Customer:");
+        Text.setText("Customers:");
 
         Customers.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         Customers.setModel(new javax.swing.table.DefaultTableModel(
