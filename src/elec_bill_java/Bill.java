@@ -16,6 +16,8 @@ public class Bill extends javax.swing.JFrame {
     
     private int C_ID;
     
+    private double amt;
+    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Bill.class.getName());
 
     /**
@@ -53,7 +55,6 @@ public class Bill extends javax.swing.JFrame {
         O_DaysD = new javax.swing.JLabel();
         AmtL = new javax.swing.JLabel();
         AmtD = new javax.swing.JLabel();
-        PayL = new javax.swing.JLabel();
         PayS = new javax.swing.JComboBox<>();
         Pay = new javax.swing.JButton();
 
@@ -89,9 +90,6 @@ public class Bill extends javax.swing.JFrame {
         AmtD.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         AmtD.setText("T_Amt");
 
-        PayL.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        PayL.setText("Select Payment Method:");
-
         PayS.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         PayS.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -111,7 +109,7 @@ public class Bill extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(25, 25, 25)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(O_DaysL)
@@ -127,12 +125,10 @@ public class Bill extends javax.swing.JFrame {
                                     .addComponent(O_DaysD)
                                     .addComponent(AmtD)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(PayL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(PayS, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(16, 16, 16))))
+                                .addGap(34, 34, 34)
+                                .addComponent(PayS, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(133, 133, 133)
+                        .addGap(122, 122, 122)
                         .addComponent(Pay)))
                 .addContainerGap(59, Short.MAX_VALUE))
         );
@@ -159,13 +155,11 @@ public class Bill extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(AmtL)
                     .addComponent(AmtD))
-                .addGap(38, 38, 38)
-                .addComponent(PayL)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(35, 35, 35)
                 .addComponent(PayS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
+                .addGap(18, 18, 18)
                 .addComponent(Pay)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -186,17 +180,18 @@ public class Bill extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void PayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PayActionPerformed
-    javax.swing.JOptionPane.showMessageDialog(this, "Test payment done");
-    java.awt.Point currentLocation = this.getLocation();
-    this.dispose();
-    try{
-        MainPage_Customer mainPage = new MainPage_Customer(C_ID);
-        mainPage.setLocation(currentLocation); // same position
-        mainPage.setVisible(true);
-        mainPage.PayBill.setEnabled(false);
-    } catch(SQLException e){
-        javax.swing.JOptionPane.showMessageDialog(this, "Problem loading MainPage_Customer");
-    }
+        javax.swing.JOptionPane.showMessageDialog(this, "Test payment done");
+        java.awt.Point currentLocation = this.getLocation();
+        this.dispose();
+        try{
+            MainPage_Customer mainPage = new MainPage_Customer(C_ID);
+            mainPage.setLocation(currentLocation); // same position
+            mainPage.setVisible(true);
+            mainPage.PayBill.setEnabled(false);
+        } catch(SQLException e){
+            javax.swing.JOptionPane.showMessageDialog(this, "Problem loading MainPage_Customer");
+        }
+        DBUtil.insertBillAndPayment(C_ID, amt, this.PayS.getSelectedIndex());
     }//GEN-LAST:event_PayActionPerformed
 
     /**
@@ -234,7 +229,6 @@ public class Bill extends javax.swing.JFrame {
     private javax.swing.JLabel O_DaysD;
     private javax.swing.JLabel O_DaysL;
     private javax.swing.JButton Pay;
-    private javax.swing.JLabel PayL;
     private javax.swing.JComboBox<String> PayS;
     private javax.swing.JLabel UnitD;
     private javax.swing.JLabel UnitL;
@@ -261,8 +255,8 @@ public class Bill extends javax.swing.JFrame {
         setDays();
         
         this.MeterD.setText(DBUtil.getRate(C_ID)+"");
-        
-        this.AmtD.setText(totalAmt(units, C_ID)+"");
+        amt = totalAmt(units, C_ID);
+        this.AmtD.setText(amt+"");
     }
     
     private int rngUnits(){
@@ -305,10 +299,19 @@ public class Bill extends javax.swing.JFrame {
     
     private void loadPaymentMethods() {
         javax.swing.DefaultComboBoxModel<String> model = new javax.swing.DefaultComboBoxModel<>();
+        model.addElement("Select Payment Method"); // default
         model.addElement("UPI");
         model.addElement("Card");
         model.addElement("Net Banking");
         PayS.setModel(model);
+        Pay.setEnabled(false);
+        PayS.addItemListener(e -> {
+            if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
+                Pay.setEnabled(PayS.getSelectedIndex() != 0);
+            }
+        });
     }
+    
+    
     
 }

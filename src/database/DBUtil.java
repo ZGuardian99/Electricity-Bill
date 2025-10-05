@@ -553,16 +553,38 @@ public class DBUtil {
         return 0;
     }
     
-    public static void insertBill(double amt, int C_ID){
-        String query1 = "INSERT INTO bill (BillDate, TotalAmt, C_ID) VALUES (CURDATE(), ?, ?);";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query1)) {
+    public static void insertBillAndPayment(int C_ID, double amt, int modeID) {
+        String insertBillSQL = "INSERT INTO bill (BillDate, TotalAmt, C_ID) VALUES (CURDATE(), ?, ?)";
+        String insertPaymentSQL = "INSERT INTO payment (Date, ModeID, B_ID) VALUES (CURDATE(), ?, ?)";
 
-            pstmt.setDouble(1, amt);
-            pstmt.setInt(2, C_ID);
+        try (Connection conn = DBUtil.getConnection()) {
+            conn.setAutoCommit(false);
 
-        } catch (SQLException ex) {
-            System.getLogger(DBUtil.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            int billID;
+
+            try (PreparedStatement billStmt = conn.prepareStatement(insertBillSQL, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+                billStmt.setDouble(1, amt);
+                billStmt.setInt(2, C_ID);
+                billStmt.executeUpdate();
+
+                try (ResultSet rs = billStmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        billID = rs.getInt(1);
+                    } else {
+                        throw new SQLException("Failed to retrieve generated Bill ID.");
+                    }
+                }
+            }
+
+            try (PreparedStatement payStmt = conn.prepareStatement(insertPaymentSQL)) {
+                payStmt.setInt(1, modeID);
+                payStmt.setInt(2, billID);
+                payStmt.executeUpdate();
+            }
+
+            conn.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
