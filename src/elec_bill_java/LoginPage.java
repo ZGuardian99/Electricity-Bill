@@ -172,53 +172,52 @@ public class LoginPage extends javax.swing.JFrame {
                 handleFailedLogin();
                 Error.setText("Invalid email or password");
             } else switch (userType) {
-        case ADMIN:
-            {
-                // Reset login attempts on successful login
-                resetLoginAttempts();
-                // Get admin details if needed
-                String adminName = getAdminName(email);
-                Error.setForeground(new java.awt.Color(0, 128, 0));
-                Error.setText("Login successful! Redirecting...");
-                // Small delay for user feedback
-                javax.swing.Timer timer;
-                timer = new javax.swing.Timer(1000, e -> {
-                    MainPage_Admin adminPage;
-                    adminPage = new MainPage_Admin();
-                    adminPage.setLocation(this.getLocation());
-                    adminPage.setVisible(true);
-                    this.dispose();
-                });
-                timer.setRepeats(false);
-                timer.start();
-                break;
+                case ADMIN:
+                    {
+                        // Reset login attempts on successful login
+                        resetLoginAttempts();
+                        // Get admin details if needed
+                        String adminName = getAdminName(email);
+                        Error.setForeground(new java.awt.Color(0, 128, 0));
+                        Error.setText("Login successful! Redirecting...");
+                        // Small delay for user feedback
+                        javax.swing.Timer timer;
+                        timer = new javax.swing.Timer(1000, e -> {
+                            MainPage_Admin adminPage;
+                            adminPage = new MainPage_Admin();
+                            adminPage.setLocation(this.getLocation());
+                            adminPage.setVisible(true);
+                            this.dispose();
+                        });
+                        timer.setRepeats(false);
+                        timer.start();
+                        break;
+                    }
+                case CUSTOMER:
+                    {
+                        // Reset login attempts on successful login
+                        resetLoginAttempts();
+                        // Get customer details
+                        String customerName = getCustomerName(email);
+                        Error.setForeground(new java.awt.Color(0, 128, 0));
+                        Error.setText("Login successful! Redirecting...");
+                        // Small delay for user feedback
+                        javax.swing.Timer timer = new javax.swing.Timer(1000, e -> {
+                            MainPage_Customer custPage = new MainPage_Customer(customerName);
+                            custPage.setLocation(this.getLocation());
+                            custPage.setVisible(true);
+                            this.dispose();
+                        });
+                        timer.setRepeats(false);
+                        timer.start();
+                        break;
+                    }
+                default:
+                    // Invalid credentials
+                    handleFailedLogin();
+                    Error.setText("Invalid email or password");
+                    break;
             }
-        case CUSTOMER:
-            {
-                // Reset login attempts on successful login
-                resetLoginAttempts();
-                // Get customer details
-                String customerName = getCustomerName(email);
-                Error.setForeground(new java.awt.Color(0, 128, 0));
-                Error.setText("Login successful! Redirecting...");
-                // Small delay for user feedback
-                javax.swing.Timer timer = new javax.swing.Timer(1000, e -> {
-                    MainPage_Customer custPage = new MainPage_Customer(customerName);
-                    custPage.setLocation(this.getLocation());
-                    custPage.setVisible(true);
-                    this.dispose();
-                });
-                timer.setRepeats(false);
-                timer.start();
-                break;
-            }
-        default:
-            // Invalid credentials
-            handleFailedLogin();
-            Error.setText("Invalid email or password");
-            break;
-    }
-
         } catch (Exception ex) {
             handleFailedLogin();
             Error.setText("Login failed. Please check your credentials.");

@@ -1,10 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `elec_bill` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `elec_bill`;
--- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.42, for Win64 (x86_64)
 --
 -- Host: localhost    Database: elec_bill
 -- ------------------------------------------------------
--- Server version	8.0.41
+-- Server version	8.0.42
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -25,10 +23,9 @@ DROP TABLE IF EXISTS `address`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `address` (
-  `State` varchar(21) DEFAULT NULL,
   `C_ID` int DEFAULT NULL,
   `CityID` int DEFAULT NULL,
-  `AddressText` varchar(255) DEFAULT NULL,
+  `AddressText` text,
   KEY `fk_address_customer` (`C_ID`),
   KEY `fk_address_city` (`CityID`),
   CONSTRAINT `fk_address_city` FOREIGN KEY (`CityID`) REFERENCES `city` (`CityID`),
@@ -42,6 +39,7 @@ CREATE TABLE `address` (
 
 LOCK TABLES `address` WRITE;
 /*!40000 ALTER TABLE `address` DISABLE KEYS */;
+INSERT INTO `address` VALUES (4798,766,'qwertyuiopaa  asdfgh'),(1798,1252,'rafvnfdshdv awfadf');
 /*!40000 ALTER TABLE `address` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -54,8 +52,9 @@ DROP TABLE IF EXISTS `admin`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `admin` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `pass` varchar(255) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `Salt` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -85,14 +84,11 @@ CREATE TABLE `bill` (
   `Status` varchar(20) DEFAULT NULL,
   `C_ID` int DEFAULT NULL,
   `MeterID` int DEFAULT NULL,
-  `UseID` int DEFAULT NULL,
   PRIMARY KEY (`B_ID`),
   KEY `C_ID` (`C_ID`),
   KEY `MeterID` (`MeterID`),
-  KEY `fk_bill_usertype` (`UseID`),
   CONSTRAINT `bill_ibfk_1` FOREIGN KEY (`C_ID`) REFERENCES `customer` (`C_ID`),
-  CONSTRAINT `bill_ibfk_2` FOREIGN KEY (`MeterID`) REFERENCES `meter` (`MeterID`),
-  CONSTRAINT `fk_bill_usertype` FOREIGN KEY (`UseID`) REFERENCES `usertype` (`UseID`)
+  CONSTRAINT `bill_ibfk_2` FOREIGN KEY (`MeterID`) REFERENCES `meter` (`MeterID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -144,9 +140,12 @@ CREATE TABLE `customer` (
   `PhoneNo` varchar(15) DEFAULT NULL,
   `EmailID` varchar(100) DEFAULT NULL,
   `ConnectionDate` date DEFAULT NULL,
-  `Gender` char(1) DEFAULT NULL,
+  `Gender` varchar(6) DEFAULT NULL,
   `Password` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`C_ID`)
+  `Salt` varchar(32) DEFAULT NULL,
+  `Name` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`C_ID`),
+  CONSTRAINT `chk_gender` CHECK ((`Gender` in (_utf8mb4'Male',_utf8mb4'Female')))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -156,6 +155,7 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
+INSERT INTO `customer` VALUES (1798,'7549012374','adity@gmail.com','2025-09-28','Male','SEH4ztbGBOwo3aOpgIMZpbOuxKBHq8YB0apA85KxHDI=','FL7Zf8La0FBy+7DMQt2uYw==','Aditya Singh'),(4798,'9321478453','zgaurd99@gmail.com','2025-09-28','Male','bwDfCrxLBtW9lXHKVXNDlCMY4g36AlZRvg1dkan5RTQ=','srPET9A3ZxukNuTYrM6OHw==','Arin Adkar');
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -167,7 +167,7 @@ DROP TABLE IF EXISTS `meter`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `meter` (
-  `MeterID` int NOT NULL,
+  `MeterID` int NOT NULL AUTO_INCREMENT,
   `Status` varchar(20) DEFAULT NULL,
   `C_ID` int DEFAULT NULL,
   `RateID` int DEFAULT NULL,
@@ -176,7 +176,7 @@ CREATE TABLE `meter` (
   KEY `fk_meter_rate` (`RateID`),
   CONSTRAINT `fk_meter_rate` FOREIGN KEY (`RateID`) REFERENCES `rate` (`RateID`),
   CONSTRAINT `meter_ibfk_1` FOREIGN KEY (`C_ID`) REFERENCES `customer` (`C_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,6 +185,7 @@ CREATE TABLE `meter` (
 
 LOCK TABLES `meter` WRITE;
 /*!40000 ALTER TABLE `meter` DISABLE KEYS */;
+INSERT INTO `meter` VALUES (1,'notDue',4798,1),(2,'notDue',1798,2);
 /*!40000 ALTER TABLE `meter` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -241,6 +242,31 @@ LOCK TABLES `payment` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `phone`
+--
+
+DROP TABLE IF EXISTS `phone`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `phone` (
+  `C_ID` int DEFAULT NULL,
+  `phone1` int DEFAULT NULL,
+  `phone2` int DEFAULT NULL,
+  KEY `C_ID` (`C_ID`),
+  CONSTRAINT `phone_ibfk_1` FOREIGN KEY (`C_ID`) REFERENCES `customer` (`C_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phone`
+--
+
+LOCK TABLES `phone` WRITE;
+/*!40000 ALTER TABLE `phone` DISABLE KEYS */;
+/*!40000 ALTER TABLE `phone` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `rate`
 --
 
@@ -291,28 +317,58 @@ INSERT INTO `state` VALUES (29,'Andaman & Nicobar Islands'),(1,'Andhra Pradesh')
 UNLOCK TABLES;
 
 --
--- Table structure for table `usertype`
+-- Table structure for table `transaction_history`
 --
 
-DROP TABLE IF EXISTS `usertype`;
+DROP TABLE IF EXISTS `transaction_history`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `usertype` (
-  `UseID` int NOT NULL AUTO_INCREMENT,
-  `UseType` varchar(50) NOT NULL,
-  `Rate` decimal(6,2) NOT NULL,
-  PRIMARY KEY (`UseID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `transaction_history` (
+  `T_ID` int NOT NULL AUTO_INCREMENT,
+  `C_ID` int NOT NULL,
+  `B_ID` int NOT NULL,
+  `PaymentDate` date NOT NULL,
+  `Amount` decimal(10,2) NOT NULL,
+  `Mode` enum('Online','Cash','Card','UPI') DEFAULT 'Online',
+  PRIMARY KEY (`T_ID`),
+  KEY `C_ID` (`C_ID`),
+  KEY `B_ID` (`B_ID`),
+  CONSTRAINT `transaction_history_ibfk_1` FOREIGN KEY (`C_ID`) REFERENCES `customer` (`C_ID`),
+  CONSTRAINT `transaction_history_ibfk_2` FOREIGN KEY (`B_ID`) REFERENCES `bill` (`B_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `usertype`
+-- Dumping data for table `transaction_history`
 --
 
-LOCK TABLES `usertype` WRITE;
-/*!40000 ALTER TABLE `usertype` DISABLE KEYS */;
-INSERT INTO `usertype` VALUES (1,'Domestic',5.00),(2,'Commercial',7.50),(3,'Industrial',10.00);
-/*!40000 ALTER TABLE `usertype` ENABLE KEYS */;
+LOCK TABLES `transaction_history` WRITE;
+/*!40000 ALTER TABLE `transaction_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `transaction_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `units`
+--
+
+DROP TABLE IF EXISTS `units`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `units` (
+  `c_id` int NOT NULL,
+  `units_used` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`c_id`),
+  CONSTRAINT `units_ibfk_1` FOREIGN KEY (`c_id`) REFERENCES `customer` (`C_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `units`
+--
+
+LOCK TABLES `units` WRITE;
+/*!40000 ALTER TABLE `units` DISABLE KEYS */;
+/*!40000 ALTER TABLE `units` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -324,4 +380,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-09-28 16:21:57
+-- Dump completed on 2025-10-04 21:38:35

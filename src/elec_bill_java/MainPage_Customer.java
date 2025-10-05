@@ -123,9 +123,7 @@ public class MainPage_Customer extends javax.swing.JFrame {
                         .addContainerGap(21, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel3)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(Welcome, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -173,7 +171,14 @@ public class MainPage_Customer extends javax.swing.JFrame {
     }//GEN-LAST:event_ViewDetailsActionPerformed
 
     private void PayBillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PayBillActionPerformed
-        // TODO add your handling code here:
+        try {
+            Bill bill = new Bill(DBUtil.getCID(name));
+            bill.setLocation(this.getLocation());
+            bill.setVisible(true);
+            this.dispose();
+        } catch (SQLException ex) {
+            System.getLogger(MainPage_Customer.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
     }//GEN-LAST:event_PayBillActionPerformed
 
     private void HistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HistoryActionPerformed
@@ -208,7 +213,7 @@ public class MainPage_Customer extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton History;
     private javax.swing.JButton Logout;
-    private javax.swing.JButton PayBill;
+    public javax.swing.JButton PayBill;
     private javax.swing.JButton ViewDetails;
     private javax.swing.JLabel Welcome;
     private javax.swing.JLabel jLabel3;

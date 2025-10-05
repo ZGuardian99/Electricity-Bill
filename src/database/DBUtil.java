@@ -20,6 +20,9 @@ import java.util.Base64;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
+import java.sql.CallableStatement;
+import java.sql.Types;
 
 public class DBUtil {
     
@@ -400,5 +403,166 @@ public class DBUtil {
             }
         }
         return null;
+    }
+    
+    public static boolean doesCIdExist(int C_ID) {
+        String sql = "SELECT 1 FROM bill WHERE C_ID = ? LIMIT 1";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, C_ID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public static boolean isUnitSet(int C_ID){
+        String query = "Select 1 From units where C_ID = ? Limit 1";
+        try (Connection conn = getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, C_ID);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException ex) {
+            System.getLogger(DBUtil.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            return false;
+        }
+    }
+    
+    public static int getDays(int C_ID) throws SQLException {
+        String query;
+
+        if (doesCIdExist(C_ID)) {
+            query = "SELECT DATEDIFF(CURDATE(), BillDate) AS days_since_bill " +
+                    "FROM bill " +
+                    "WHERE C_ID = ? " +
+                    "ORDER BY BillDate DESC LIMIT 1";
+        } else {
+            query = "SELECT DATEDIFF(CURDATE(), ConnectionDate) AS days_since_connection " +
+                    "FROM customer WHERE C_ID = ?";
+        }
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, C_ID);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1); // days_since_bill or days_since_connection
+                } else {
+                    return 0;
+                }
+            }
+        }
+    }
+    
+    public static void updateUnit(int units, int C_ID){
+        String query = "Update units set units_used = ? where C_ID = ?";
+        try (Connection conn = getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, units);
+            pstmt.setInt(2, C_ID);
+
+        } catch (SQLException ex) {
+            System.getLogger(DBUtil.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }
+    
+    public static void setUnit(int units, int C_ID){
+        String query = "Insert units Values (?, ?)";
+        try (Connection conn = getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, C_ID);
+            pstmt.setInt(2, units);
+
+        } catch (SQLException ex) {
+            System.getLogger(DBUtil.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }
+    
+    public static LocalDate getDate1(int C_ID) {
+        String query = "SELECT BillDate FROM bill WHERE C_ID = ? ORDER BY BillDate DESC LIMIT 1";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, C_ID);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    java.sql.Date sqlDate = rs.getDate("BillDate");
+                    if (sqlDate != null) {
+                        return sqlDate.toLocalDate();
+                    }
+                }
+            }
+
+        } catch (SQLException ex) {
+            System.getLogger(DBUtil.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        return null;
+    }
+
+
+    public static LocalDate getDate2(int C_ID) {
+        String query = "SELECT ConnectionDate FROM customer WHERE C_ID = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, C_ID);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) { // Move to first row
+                    java.sql.Date sqlDate = rs.getDate("ConnectionDate");
+                    if (sqlDate != null) {
+                        return sqlDate.toLocalDate();
+                    }
+                }
+            }
+
+        } catch (SQLException ex) {
+            System.getLogger(DBUtil.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        return null;
+    }
+    
+    public static double getRate(int C_ID){
+        String query = "SELECT r.RatePerUnit FROM meter m JOIN rate r ON m.RateID = r.RateID WHERE m.C_ID = ? ";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, C_ID);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("RatePerUnit");
+                }
+            }
+
+        } catch (SQLException ex) {
+            System.getLogger(DBUtil.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        return 0;
+    }
+    
+    public static void insertBill(double amt, int C_ID){
+        String query1 = "INSERT INTO bill (BillDate, TotalAmt, C_ID) VALUES (CURDATE(), ?, ?);";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query1)) {
+
+            pstmt.setDouble(1, amt);
+            pstmt.setInt(2, C_ID);
+
+        } catch (SQLException ex) {
+            System.getLogger(DBUtil.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
     }
 }
