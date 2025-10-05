@@ -47,6 +47,7 @@ public class UpdateInfo extends javax.swing.JFrame {
         Error = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         NameL.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         NameL.setText("Name");

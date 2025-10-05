@@ -182,7 +182,14 @@ public class MainPage_Customer extends javax.swing.JFrame {
     }//GEN-LAST:event_PayBillActionPerformed
 
     private void HistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HistoryActionPerformed
-        // TODO add your handling code here:
+        try {
+            Transaction t = new Transaction(DBUtil.getCID(name));
+            t.setLocation(this.getLocation());
+            t.setVisible(true);
+            this.dispose();
+        } catch (SQLException ex) {
+            System.getLogger(MainPage_Customer.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
     }//GEN-LAST:event_HistoryActionPerformed
 
     /**

@@ -67,6 +67,7 @@ public class ViewDetails extends javax.swing.JFrame {
         AddressO = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         NameL.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         NameL.setText("Name");
