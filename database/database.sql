@@ -76,20 +76,14 @@ DROP TABLE IF EXISTS `bill`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `bill` (
-  `B_ID` int NOT NULL,
+  `B_ID` int NOT NULL AUTO_INCREMENT,
   `BillDate` date NOT NULL,
-  `DueDate` date NOT NULL,
-  `UnitsUsed` int NOT NULL,
   `TotalAmt` decimal(10,2) DEFAULT NULL,
-  `Status` varchar(20) DEFAULT NULL,
   `C_ID` int DEFAULT NULL,
-  `MeterID` int DEFAULT NULL,
   PRIMARY KEY (`B_ID`),
   KEY `C_ID` (`C_ID`),
-  KEY `MeterID` (`MeterID`),
-  CONSTRAINT `bill_ibfk_1` FOREIGN KEY (`C_ID`) REFERENCES `customer` (`C_ID`),
-  CONSTRAINT `bill_ibfk_2` FOREIGN KEY (`MeterID`) REFERENCES `meter` (`MeterID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `bill_ibfk_1` FOREIGN KEY (`C_ID`) REFERENCES `customer` (`C_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,6 +92,7 @@ CREATE TABLE `bill` (
 
 LOCK TABLES `bill` WRITE;
 /*!40000 ALTER TABLE `bill` DISABLE KEYS */;
+INSERT INTO `bill` VALUES (1,'2025-10-05',157.50,4798);
 /*!40000 ALTER TABLE `bill` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -222,14 +217,16 @@ DROP TABLE IF EXISTS `payment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `payment` (
-  `P_ID` int NOT NULL,
+  `P_ID` int NOT NULL AUTO_INCREMENT,
   `Date` date NOT NULL,
-  `Mode` varchar(20) DEFAULT NULL,
+  `ModeID` int NOT NULL,
   `B_ID` int DEFAULT NULL,
   PRIMARY KEY (`P_ID`),
   KEY `B_ID` (`B_ID`),
+  KEY `fk_payment_mode` (`ModeID`),
+  CONSTRAINT `fk_payment_mode` FOREIGN KEY (`ModeID`) REFERENCES `payment_mode` (`ModeID`) ON DELETE RESTRICT,
   CONSTRAINT `payment_ibfk_1` FOREIGN KEY (`B_ID`) REFERENCES `bill` (`B_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -238,32 +235,32 @@ CREATE TABLE `payment` (
 
 LOCK TABLES `payment` WRITE;
 /*!40000 ALTER TABLE `payment` DISABLE KEYS */;
+INSERT INTO `payment` VALUES (1,'2025-10-05',1,1);
 /*!40000 ALTER TABLE `payment` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `phone`
+-- Table structure for table `payment_mode`
 --
 
-DROP TABLE IF EXISTS `phone`;
+DROP TABLE IF EXISTS `payment_mode`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `phone` (
-  `C_ID` int DEFAULT NULL,
-  `phone1` int DEFAULT NULL,
-  `phone2` int DEFAULT NULL,
-  KEY `C_ID` (`C_ID`),
-  CONSTRAINT `phone_ibfk_1` FOREIGN KEY (`C_ID`) REFERENCES `customer` (`C_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `payment_mode` (
+  `ModeID` int NOT NULL AUTO_INCREMENT,
+  `Mode` varchar(20) NOT NULL,
+  PRIMARY KEY (`ModeID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `phone`
+-- Dumping data for table `payment_mode`
 --
 
-LOCK TABLES `phone` WRITE;
-/*!40000 ALTER TABLE `phone` DISABLE KEYS */;
-/*!40000 ALTER TABLE `phone` ENABLE KEYS */;
+LOCK TABLES `payment_mode` WRITE;
+/*!40000 ALTER TABLE `payment_mode` DISABLE KEYS */;
+INSERT INTO `payment_mode` VALUES (1,'UPI'),(2,'Card'),(3,'NetBanking');
+/*!40000 ALTER TABLE `payment_mode` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -317,37 +314,6 @@ INSERT INTO `state` VALUES (29,'Andaman & Nicobar Islands'),(1,'Andhra Pradesh')
 UNLOCK TABLES;
 
 --
--- Table structure for table `transaction_history`
---
-
-DROP TABLE IF EXISTS `transaction_history`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `transaction_history` (
-  `T_ID` int NOT NULL AUTO_INCREMENT,
-  `C_ID` int NOT NULL,
-  `B_ID` int NOT NULL,
-  `PaymentDate` date NOT NULL,
-  `Amount` decimal(10,2) NOT NULL,
-  `Mode` enum('Online','Cash','Card','UPI') DEFAULT 'Online',
-  PRIMARY KEY (`T_ID`),
-  KEY `C_ID` (`C_ID`),
-  KEY `B_ID` (`B_ID`),
-  CONSTRAINT `transaction_history_ibfk_1` FOREIGN KEY (`C_ID`) REFERENCES `customer` (`C_ID`),
-  CONSTRAINT `transaction_history_ibfk_2` FOREIGN KEY (`B_ID`) REFERENCES `bill` (`B_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `transaction_history`
---
-
-LOCK TABLES `transaction_history` WRITE;
-/*!40000 ALTER TABLE `transaction_history` DISABLE KEYS */;
-/*!40000 ALTER TABLE `transaction_history` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `units`
 --
 
@@ -380,4 +346,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-04 21:38:35
+-- Dump completed on 2025-10-05 17:38:10
