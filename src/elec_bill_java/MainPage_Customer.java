@@ -77,6 +77,8 @@ public class MainPage_Customer extends javax.swing.JFrame {
         ViewDetails.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         ViewDetails.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/view-details.png"))); // NOI18N
         ViewDetails.setText("View Details");
+        ViewDetails.setContentAreaFilled(false);
+        ViewDetails.setFocusPainted(false);
         ViewDetails.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ViewDetails.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         ViewDetails.addActionListener(new java.awt.event.ActionListener() {

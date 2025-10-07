@@ -172,15 +172,10 @@ public class LoginPage extends javax.swing.JFrame {
                 handleFailedLogin();
                 Error.setText("Invalid email or password");
             } else switch (userType) {
-                case ADMIN:
-                    {
-                        // Reset login attempts on successful login
+                case ADMIN ->                     {
                         resetLoginAttempts();
-                        // Get admin details if needed
-                        String adminName = getAdminName(email);
                         Error.setForeground(new java.awt.Color(0, 128, 0));
                         Error.setText("Login successful! Redirecting...");
-                        // Small delay for user feedback
                         javax.swing.Timer timer;
                         timer = new javax.swing.Timer(1000, e -> {
                             MainPage_Admin adminPage;
@@ -191,10 +186,8 @@ public class LoginPage extends javax.swing.JFrame {
                         });
                         timer.setRepeats(false);
                         timer.start();
-                        break;
                     }
-                case CUSTOMER:
-                    {
+                case CUSTOMER ->                     {
                         // Reset login attempts on successful login
                         resetLoginAttempts();
                         // Get customer details
@@ -210,13 +203,12 @@ public class LoginPage extends javax.swing.JFrame {
                         });
                         timer.setRepeats(false);
                         timer.start();
-                        break;
                     }
-                default:
+                default -> {
                     // Invalid credentials
                     handleFailedLogin();
                     Error.setText("Invalid email or password");
-                    break;
+                }
             }
         } catch (Exception ex) {
             handleFailedLogin();

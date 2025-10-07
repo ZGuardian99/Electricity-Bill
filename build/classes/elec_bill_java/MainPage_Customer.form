@@ -111,6 +111,8 @@
           <Image iconType="3" name="/resources/view-details.png"/>
         </Property>
         <Property name="text" type="java.lang.String" value="View Details"/>
+        <Property name="contentAreaFilled" type="boolean" value="false"/>
+        <Property name="focusPainted" type="boolean" value="false"/>
         <Property name="horizontalTextPosition" type="int" value="0"/>
         <Property name="verticalTextPosition" type="int" value="3"/>
       </Properties>

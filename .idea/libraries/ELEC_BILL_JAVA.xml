@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ELEC_BILL_JAVA">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dist/ELEC_BILL_JAVA.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -65,26 +65,27 @@ public class ViewDetails extends javax.swing.JFrame {
         Update = new javax.swing.JButton();
         AddressL = new javax.swing.JLabel();
         AddressO = new javax.swing.JTextArea();
+        Update1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        NameL.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        NameL.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         NameL.setText("Name");
 
-        PhoneNoL.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        PhoneNoL.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         PhoneNoL.setText("Phone No");
 
-        EmailL.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        EmailL.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         EmailL.setText("Email");
 
-        GenderL.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        GenderL.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         GenderL.setText("Gender");
 
-        StateL.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        StateL.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         StateL.setText("State");
 
-        CityL.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        CityL.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         CityL.setText("City");
 
         NameO.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -106,7 +107,7 @@ public class ViewDetails extends javax.swing.JFrame {
         CityO.setText("City");
 
         Update.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        Update.setText("Update");
+        Update.setText("Return");
         Update.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 UpdateActionPerformed(evt);
@@ -125,6 +126,14 @@ public class ViewDetails extends javax.swing.JFrame {
         AddressO.setBorder(null);
         AddressO.setOpaque(false);
 
+        Update1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        Update1.setText("Update");
+        Update1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Update1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -132,7 +141,10 @@ public class ViewDetails extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(46, 46, 46)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(Update, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(Update1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(78, 78, 78)
+                        .addComponent(Update, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(AddressO, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jPanel2Layout.createSequentialGroup()
@@ -150,11 +162,11 @@ public class ViewDetails extends javax.swing.JFrame {
                                 .addComponent(AddressL, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGap(18, 18, 18)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(GenderL, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(PhoneNoO, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(GenderO, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(CityL, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(CityO, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(CityO, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(GenderL, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(48, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -188,9 +200,11 @@ public class ViewDetails extends javax.swing.JFrame {
                 .addComponent(AddressL, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(AddressO, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(Update, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Update, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Update1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -210,11 +224,19 @@ public class ViewDetails extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void UpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateActionPerformed
-        Update update = new Update(C_ID);
-        update.setLocation(this.getLocation());
-        update.setVisible(true);
-        this.dispose();
+        try{
+            MainPage_Customer customer = new MainPage_Customer(C_ID);
+            customer.setLocation(this.getLocation());
+            customer.setVisible(true);
+            this.dispose();
+        }catch(SQLException e){
+        }
+        
     }//GEN-LAST:event_UpdateActionPerformed
+
+    private void Update1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Update1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Update1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -257,6 +279,7 @@ public class ViewDetails extends javax.swing.JFrame {
     private javax.swing.JLabel StateL;
     private javax.swing.JLabel StateO;
     private javax.swing.JButton Update;
+    private javax.swing.JButton Update1;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
     

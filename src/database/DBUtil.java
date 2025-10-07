@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Date;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,8 +22,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
-import java.sql.CallableStatement;
-import java.sql.Types;
 
 public class DBUtil {
     
@@ -229,8 +228,6 @@ public class DBUtil {
             throw new RuntimeException("MD5 algorithm not available", e);
         }
     }
-    
-    // SECURITY FIX: Secure login method with proper password hashing
 
     /**
      *
@@ -282,15 +279,6 @@ public class DBUtil {
             e.printStackTrace();
         }
         return null; // Invalid login
-    }
-    
-    // Method to migrate existing MD5 passwords to PBKDF2
-    public static void migratePasswordSecurity(String email, String plainTextPassword) throws SQLException {
-        String salt = generateSalt();
-        String newHash = hashPassword(plainTextPassword, salt);
-        
-        String updateQuery = "UPDATE customer SET Password = ?, Salt = ? WHERE EmailID = ?";
-        executeUpdate(updateQuery, newHash, salt, email);
     }
     
     // Utility method for creating new user accounts with secure password storage
@@ -521,7 +509,7 @@ public class DBUtil {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) { // Move to first row
-                    java.sql.Date sqlDate = rs.getDate("ConnectionDate");
+                    Date sqlDate = rs.getDate("ConnectionDate");
                     if (sqlDate != null) {
                         return sqlDate.toLocalDate();
                     }
@@ -586,5 +574,41 @@ public class DBUtil {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    
+    public static List<AdminShow> loadDetailsAdmin() {
+        String query = """
+            SELECT c.Name, r.Type, b.BillDate
+            FROM customer c
+            JOIN meter m ON c.C_ID = m.C_ID
+            JOIN rate r ON m.RateID = r.RateID
+            JOIN bill b ON b.C_ID = c.C_ID
+            WHERE b.BillDate = (
+                SELECT MAX(b2.BillDate)
+                FROM bill b2
+                WHERE b2.C_ID = c.C_ID
+            );
+        """;
+
+        List<AdminShow> resultList = new ArrayList<>();
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                String name = rs.getString("Name");
+                String type = rs.getString("Type");
+                Date date = rs.getDate("BillDate");
+
+                AdminShow record = new AdminShow(name, type, date.toLocalDate().plusDays(30));
+                resultList.add(record);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return resultList;
     }
 }
