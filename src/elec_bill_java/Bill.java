@@ -282,13 +282,7 @@ public class Bill extends javax.swing.JFrame {
             int days = DBUtil.getDays(C_ID);
             double rate = DBUtil.getRate(C_ID);
 
-            if (days <= 30) {
-                amt = unit * rate * days;
-            } else {
-                double amt1 = unit * rate * 30;
-                double amt2 = unit * rate * (days - 30);
-                amt = amt1 + amt2;
-            }
+            BillCalculator.total(unit, rate, days);
         } catch (SQLException ex) {
             System.out.println("Error fetching days or rate: " + ex.getMessage());
             ex.printStackTrace();

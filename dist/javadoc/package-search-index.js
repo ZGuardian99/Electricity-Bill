@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"database"},{"l":"elec_bill_java"}];updateSearchResults();

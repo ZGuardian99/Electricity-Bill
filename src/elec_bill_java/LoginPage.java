@@ -275,8 +275,7 @@ public class LoginPage extends javax.swing.JFrame {
     
     // Security: Email validation
     private boolean isValidEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        return email.matches(emailRegex);
+        return Validators.isValidEmail(email);
     }
     
     // Security: Rate limiting for login attempts

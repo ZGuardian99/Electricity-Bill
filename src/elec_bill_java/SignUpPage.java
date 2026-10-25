@@ -605,25 +605,15 @@ public class SignUpPage extends javax.swing.JFrame {
     }
     
     private boolean isValidEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        return email.matches(emailRegex);
+        return Validators.isValidEmail(email);
     }
     
     private boolean isValidPhone(String phone) {
-        // Indian phone number format (10 digits)
-        String phoneRegex = "^[6-9]\\d{9}$";
-        return phone.matches(phoneRegex);
+        return Validators.isValidPhone(phone);
     }
     
     private boolean isStrongPassword(String password) {
-        if (password.length() < 8) return false;
-
-        boolean hasUpper = password.chars().anyMatch(Character::isUpperCase);
-        boolean hasLower = password.chars().anyMatch(Character::isLowerCase);
-        boolean hasDigit = password.chars().anyMatch(Character::isDigit);
-        boolean hasSpecial = password.chars().anyMatch(ch -> "!@#$%^&*()_+-=[]{}|;:,.<>?".indexOf(ch) >= 0);
-
-        return hasUpper && hasLower && hasDigit && hasSpecial;
+        return Validators.isStrongPassword(password);
     }
     
     private Integer getCityId(String cityName, Integer stateId) throws SQLException {
