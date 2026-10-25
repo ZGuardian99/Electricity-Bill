@@ -402,11 +402,10 @@ public class SignUpPage extends javax.swing.JFrame {
             }
             
             //Insert int meter
-            String insertQueryMeter = "INSERT INTO meter (C_ID, Status, RateID) " + "VALUES (?, ?, ?)";
+            String insertQueryMeter = "INSERT INTO meter (C_ID, RateID) " + "VALUES (?, ?)";
             try (java.sql.PreparedStatement insertStmt = conn.prepareStatement(insertQueryMeter)){
                 insertStmt.setInt(1, newCustomerId);
-                insertStmt.setString(2, "notDue");
-                insertStmt.setInt(3, RateID);
+                insertStmt.setInt(2, RateID);
                 
                 insertStmt.executeUpdate(); 
             }

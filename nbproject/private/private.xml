@@ -2,6 +2,11 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/D:/Documents/Code/Projects/Electricity-Bill/src/elec_bill_java/SignUpPage.java</file>
+            <file>file:/D:/Documents/Code/Projects/Electricity-Bill/src/elec_bill_java/AdminHashGenerator.java</file>
+            <file>file:/D:/Documents/Code/Projects/Electricity-Bill/src/elec_bill_java/Customer.java</file>
+            <file>file:/D:/Documents/Code/Projects/Electricity-Bill/src/elec_bill_java/LoginPage.java</file>
+        </group>
     </open-files>
 </project-private>
